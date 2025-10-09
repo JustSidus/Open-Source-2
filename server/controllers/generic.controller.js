@@ -5,6 +5,10 @@ export function createController(model, { mapCreate = d => d, mapUpdate = d => d
       try {
         const payload = mapCreate(req.body);
         if (!payload.nombre && payload.nombre !== undefined) throw new Error('Campo nombre requerido');
+        // Validación específica para ciertas tablas
+        if (model.table === 'medicines' && payload.dosis && payload.dosis.length > 120) {
+          throw new Error('Dosis muy larga');
+        }
         const result = await model.create(payload);
         const row = await model.findById(result.id);
         res.status(201).json(row);
@@ -24,6 +28,9 @@ export function createController(model, { mapCreate = d => d, mapUpdate = d => d
   update: async (req, res) => { // actualizar
       try {
         const payload = mapUpdate(req.body);
+        if (model.table === 'medicines' && payload.dosis && payload.dosis.length > 120) {
+          throw new Error('Dosis muy larga');
+        }
         const result = await model.update(req.params.id, payload);
         if (!result.changes) return res.status(404).json({ error: 'No encontrado' });
         const row = await model.findById(req.params.id);

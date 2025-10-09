@@ -1,5 +1,6 @@
 const formDoc = document.getElementById('form-medico');
 const tbodyDoc = document.querySelector('#tabla tbody');
+const btnDocCancelar = document.getElementById('btn-doc-cancelar');
 let editingDocId = null;
 
 async function cargarMedicos() {
@@ -39,6 +40,8 @@ formDoc.addEventListener('submit', async (e) => {
     }
     editingDocId = null;
     formDoc.reset();
+    btnDocCancelar.classList.add('hidden');
+    document.getElementById('btn-doc-guardar').textContent='Guardar';
     await cargarMedicos();
   } catch (err) { alert(err.message); }
 });
@@ -55,9 +58,17 @@ tbodyDoc.addEventListener('click', async (e) => {
     document.getElementById('especialidad').value = d.especialidad || '';
     document.getElementById('estado').value = d.estado;
     editingDocId = id;
+    btnDocCancelar.classList.remove('hidden');
+    document.getElementById('btn-doc-guardar').textContent='Actualizar';
   } else if (e.target.dataset.del) {
     if (confirm('¿Eliminar?')) { await api.request(`/doctors/${id}`, { method: 'DELETE' }); await cargarMedicos(); }
   }
 });
 
 document.addEventListener('DOMContentLoaded', cargarMedicos);
+btnDocCancelar?.addEventListener('click', ()=>{
+  editingDocId = null;
+  formDoc.reset();
+  btnDocCancelar.classList.add('hidden');
+  document.getElementById('btn-doc-guardar').textContent='Guardar';
+});

@@ -2,6 +2,7 @@ const formVis = document.getElementById('form-visita');
 const formFiltro = document.getElementById('form-filtro');
 const tbodyVis = document.querySelector('#tabla tbody');
 let editingVisitId = null;
+let cacheDocs=[], cachePacs=[], cacheMeds=[];
 
 async function cargarSelectBase(path, id) { // llena selects
   const data = await api.request(path);
@@ -13,6 +14,8 @@ async function cargarSelectBase(path, id) { // llena selects
   }
 }
 
+function nombre(list, id){ if(!id) return ''; const f=list.find(x=>x.id===id); return f?f.nombre:id; }
+
 async function cargarVisitas(params='') { // lista visitas
   const data = await api.request('/visits' + params);
   tbodyVis.innerHTML = '';
@@ -21,12 +24,13 @@ async function cargarVisitas(params='') { // lista visitas
     tr.innerHTML = `
       <td>${v.id}</td>
       <td>${v.visitante}</td>
-      <td>${v.doctor_id||''}</td>
-      <td>${v.patient_id||''}</td>
-      <td>${v.medicine_id||''}</td>
+      <td>${nombre(cacheDocs, v.doctor_id)}</td>
+      <td>${nombre(cachePacs, v.patient_id)}</td>
+      <td>${nombre(cacheMeds, v.medicine_id)}</td>
       <td>${v.fecha||''}</td>
       <td>${v.hora||''}</td>
       <td>${v.sintomas||''}</td>
+  <td>${v.recomendaciones||''}</td>
       <td>${v.estado}</td>
       <td><button data-edit="${v.id}">Editar</button><button data-del="${v.id}">Del</button></td>`;
     tbodyVis.appendChild(tr);
@@ -43,6 +47,7 @@ formVis.addEventListener('submit', async (e) => { // guardar visita
     fecha: document.getElementById('fecha').value,
     hora: document.getElementById('hora').value,
     sintomas: document.getElementById('sintomas').value.trim(),
+  recomendaciones: document.getElementById('recomendaciones').value.trim(),
     estado: document.getElementById('estado').value
   };
   if (!payload.visitante) return alert('Visitante requerido');
@@ -70,6 +75,7 @@ tbodyVis.addEventListener('click', async (e) => { // editar o borrar
     document.getElementById('fecha').value = v.fecha || '';
     document.getElementById('hora').value = v.hora || '';
     document.getElementById('sintomas').value = v.sintomas || '';
+  document.getElementById('recomendaciones').value = v.recomendaciones || '';
     document.getElementById('estado').value = v.estado;
     editingVisitId = id;
   } else if (e.target.dataset.del) {
@@ -103,6 +109,7 @@ formFiltro.addEventListener('submit', async (e) => { // filtros reporte
       <td>${v.fecha||''}</td>
       <td>${v.hora||''}</td>
       <td>${v.sintomas||''}</td>
+  <td>${v.recomendaciones||''}</td>
       <td>${v.estado}</td>
       <td>-</td>`;
     tbodyVis.appendChild(tr);
@@ -110,10 +117,24 @@ formFiltro.addEventListener('submit', async (e) => { // filtros reporte
 });
 
 document.addEventListener('DOMContentLoaded', async () => { // inicio
-  await Promise.all([
-    cargarSelectBase('/doctors','doctor_id'),
-    cargarSelectBase('/patients','patient_id'),
-    cargarSelectBase('/medicines','medicine_id')
+  const [docs, pacs, meds] = await Promise.all([
+    api.request('/doctors'),
+    api.request('/patients'),
+    api.request('/medicines')
   ]);
+  cacheDocs = docs; cachePacs = pacs; cacheMeds = meds;
+  // llenar selects
+  fillSelect('doctor_id', docs);
+  fillSelect('patient_id', pacs);
+  fillSelect('medicine_id', meds);
+  fillSelect('f_doctor_id', docs);
+  fillSelect('f_patient_id', pacs);
+  fillSelect('f_medicine_id', meds);
   await cargarVisitas();
 });
+
+function fillSelect(id, data){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = '<option value="">--</option>' + data.map(d=>`<option value="${d.id}">${d.nombre}</option>`).join('');
+}

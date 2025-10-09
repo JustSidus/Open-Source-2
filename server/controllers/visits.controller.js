@@ -5,6 +5,7 @@ export const VisitsController = {
   async create(req, res) { // crear visita
     try {
       if (!req.body.visitante) throw new Error('Visitante requerido');
+      if (req.body.recomendaciones && req.body.recomendaciones.length > 255) throw new Error('Recomendaciones muy largas');
       const result = await Visit.create(req.body);
       const row = await Visit.findById(result.id);
       res.status(201).json(row);
@@ -23,6 +24,7 @@ export const VisitsController = {
   },
   async update(req, res) { // actualizar
     if (req.body.visitante !== undefined && !req.body.visitante) return res.status(400).json({ error: 'Visitante requerido' });
+    if (req.body.recomendaciones && req.body.recomendaciones.length > 255) return res.status(400).json({ error: 'Recomendaciones muy largas' });
     const result = await Visit.update(req.params.id, req.body);
     if (!result.changes) return res.status(404).json({ error: 'No encontrado' });
     const row = await Visit.findById(req.params.id);

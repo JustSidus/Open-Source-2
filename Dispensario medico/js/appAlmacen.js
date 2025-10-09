@@ -1,183 +1,146 @@
-// Almacén: Ubicaciones, Tipos y Marcas
-// Ubicaciones
-const formAlmacen = document.getElementById('form-almacen');
-const tbodyAlmacen = document.querySelector('#tabla tbody');
-let editingIdAlmacen = null;
+// Catálogo simplificado
+const selectCat = document.getElementById('catalogo');
+const form = document.getElementById('form-catalogo');
+const btnCancelar = document.getElementById('btn-cancelar');
+const headRow = document.getElementById('head-row');
+const bodyRows = document.getElementById('body-rows');
 
-async function cargarUbicaciones() { // lista ubicaciones
-  const data = await api.request('/locations');
-  tbodyAlmacen.innerHTML = '';
-  data.forEach(loc => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${loc.id}</td>
-      <td>${loc.nombre}</td>
-      <td>${loc.descripcion || ''}</td>
-      <td>${loc.estante || ''}</td>
-      <td>${loc.estado}</td>
-      <td>
-        <button data-edit-loc="${loc.id}">Editar</button>
-        <button data-del-loc="${loc.id}">Eliminar</button>
-      </td>`;
-    tbodyAlmacen.appendChild(tr);
+// Campos
+const fNombre = document.getElementById('f-nombre');
+const fDesc = document.getElementById('f-descripcion');
+const fEstante = document.getElementById('f-estante');
+const fEstado = document.getElementById('f-estado');
+const fTramo = document.getElementById('f-tramo');
+const fCelda = document.getElementById('f-celda');
+const wrapDesc = document.getElementById('wrap-descripcion');
+const wrapEst = document.getElementById('wrap-estante');
+const wrapTramo = document.getElementById('wrap-tramo');
+const wrapCelda = document.getElementById('wrap-celda');
+
+let editingId = null;
+
+// Config catálogos
+const catalogs = {
+  ubicaciones: {
+    endpoint: '/locations',
+    cols: ['ID','Nombre','Descripción','Estante','Tramo','Celda','Estado','Acciones'],
+    show: { descripcion:true, estante:true, tramo:true, celda:true },
+    map(row){ return [row.id,row.nombre,row.descripcion||'',row.estante||'',row.tramo||'',row.celda||'',row.estado]; }
+  },
+  tipos: {
+    endpoint: '/drug-types',
+    cols: ['ID','Nombre','Descripción','Estado','Acciones'],
+  show: { descripcion:true, estante:false, tramo:false, celda:false },
+    map(row){ return [row.id,row.nombre,row.descripcion||'',row.estado]; }
+  },
+  marcas: {
+    endpoint: '/brands',
+    cols: ['ID','Nombre','Estado','Acciones'],
+  show: { descripcion:false, estante:false, tramo:false, celda:false },
+    map(row){ return [row.id,row.nombre,row.estado]; }
+  }
+};
+
+function renderHead(cfg){
+  headRow.innerHTML = '';
+  cfg.cols.forEach(c=>{
+    const th=document.createElement('th');
+    th.textContent=c; headRow.appendChild(th);
   });
 }
 
-formAlmacen.addEventListener('submit', async (e) => { // guardar ubicacion
-  e.preventDefault();
-  const nombre = document.getElementById('nombre').value.trim();
-  if (!nombre) return alert('Nombre requerido');
-  const payload = {
-    nombre,
-    descripcion: document.getElementById('descripcion').value.trim(),
-    estante: document.getElementById('estante').value.trim(),
-    estado: document.getElementById('estado').value
-  };
-  try {
-    if (editingIdAlmacen) {
-      await api.request(`/locations/${editingIdAlmacen}`, { method: 'PUT', body: JSON.stringify(payload) });
-    } else {
-      await api.request('/locations', { method: 'POST', body: JSON.stringify(payload) });
-    }
-    formAlmacen.reset();
-    editingIdAlmacen = null;
-    await cargarUbicaciones();
-  } catch (err) { alert(err.message); }
+async function loadRows(){
+  const cat = selectCat.value;
+  const cfg = catalogs[cat];
+  bodyRows.innerHTML = '';
+  const data = await api.request(cfg.endpoint);
+  data.forEach(r=>{
+    const tr=document.createElement('tr');
+    const values = cfg.map(r);
+    values.forEach(v=>{
+      const td=document.createElement('td');
+      td.textContent=v; tr.appendChild(td);
+    });
+    const tdAcc = document.createElement('td');
+    tdAcc.className='acciones';
+    tdAcc.innerHTML = `<button data-ed="${r.id}">Editar</button><button data-del="${r.id}">Del</button>`;
+    tr.appendChild(tdAcc);
+    bodyRows.appendChild(tr);
+  });
+}
+
+function updateVisibility(){
+  const cfg = catalogs[selectCat.value];
+  wrapDesc.classList.toggle('hidden', !cfg.show.descripcion);
+  wrapEst.classList.toggle('hidden', !cfg.show.estante);
+  wrapTramo.classList.toggle('hidden', !cfg.show.tramo);
+  wrapCelda.classList.toggle('hidden', !cfg.show.celda);
+}
+
+function resetForm(){
+  form.reset();
+  editingId = null;
+  btnCancelar.classList.add('hidden');
+  document.getElementById('btn-guardar').textContent='Guardar';
+}
+
+selectCat.addEventListener('change', ()=>{
+  resetForm();
+  renderHead(catalogs[selectCat.value]);
+  updateVisibility();
+  loadRows();
 });
 
-tbodyAlmacen.addEventListener('click', async (e) => { // editar o borrar ubicacion
-  const id = e.target.dataset.editLoc || e.target.dataset.delLoc;
-  if (!id) return;
-  if (e.target.dataset.editLoc) {
-    const loc = await api.request(`/locations/${id}`);
-    document.getElementById('nombre').value = loc.nombre;
-    document.getElementById('descripcion').value = loc.descripcion || '';
-    document.getElementById('estante').value = loc.estante || '';
-    document.getElementById('estado').value = loc.estado;
-    editingIdAlmacen = id;
-  } else if (e.target.dataset.delLoc) {
-    if (confirm('¿Eliminar ubicación?')) {
-      await api.request(`/locations/${id}`, { method: 'DELETE' });
-      await cargarUbicaciones();
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const nombre = fNombre.value.trim();
+  if(!nombre) return alert('Nombre requerido');
+  const cat = selectCat.value;
+  const cfg = catalogs[cat];
+  const payload = { nombre, estado: fEstado.value };
+  if (cfg.show.descripcion) payload.descripcion = fDesc.value.trim();
+  if (cfg.show.estante) payload.estante = fEstante.value.trim();
+  if (cfg.show.tramo) payload.tramo = fTramo.value.trim();
+  if (cfg.show.celda) payload.celda = fCelda.value.trim();
+  try {
+    if (editingId) {
+      await api.request(`${cfg.endpoint}/${editingId}`, { method:'PUT', body: JSON.stringify(payload) });
+    } else {
+      await api.request(cfg.endpoint, { method:'POST', body: JSON.stringify(payload) });
+    }
+    resetForm();
+    loadRows();
+  } catch(err){ alert(err.message); }
+});
+
+btnCancelar.addEventListener('click', resetForm);
+
+bodyRows.addEventListener('click', async e => {
+  const id = e.target.dataset.ed || e.target.dataset.del;
+  if(!id) return;
+  const cfg = catalogs[selectCat.value];
+  if (e.target.dataset.ed){
+    const row = await api.request(`${cfg.endpoint}/${id}`);
+    fNombre.value = row.nombre || '';
+  if (cfg.show.descripcion) fDesc.value = row.descripcion || '';
+  if (cfg.show.estante) fEstante.value = row.estante || '';
+  if (cfg.show.tramo) fTramo.value = row.tramo || '';
+  if (cfg.show.celda) fCelda.value = row.celda || '';
+    fEstado.value = row.estado || 'Activo';
+    editingId = id;
+    btnCancelar.classList.remove('hidden');
+    document.getElementById('btn-guardar').textContent='Actualizar';
+  } else if (e.target.dataset.del){
+    if (confirm('¿Eliminar registro?')){
+      await api.request(`${cfg.endpoint}/${id}`, { method:'DELETE' });
+      loadRows();
     }
   }
 });
 
-// Tipos
-const formTipo = document.getElementById('form-tipo');
-const tbodyTipos = document.querySelector('#tabla-tipos tbody');
-let editingTipoId = null;
-
-async function cargarTipos() { // lista tipos
-  const data = await api.request('/drug-types');
-  tbodyTipos.innerHTML = '';
-  data.forEach(t => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${t.id}</td>
-      <td>${t.nombre}</td>
-      <td>${t.descripcion || ''}</td>
-      <td>${t.estado}</td>
-      <td>
-        <button data-edit-tipo="${t.id}">Editar</button>
-        <button data-del-tipo="${t.id}">Eliminar</button>
-      </td>`;
-    tbodyTipos.appendChild(tr);
-  });
-}
-
-formTipo?.addEventListener('submit', async (e) => { // guardar tipo
-  e.preventDefault();
-  const payload = {
-    nombre: document.getElementById('tipo-nombre').value.trim(),
-    descripcion: document.getElementById('tipo-descripcion').value.trim(),
-    estado: document.getElementById('tipo-estado').value
-  };
-  if (!payload.nombre) return alert('Nombre requerido');
-  try {
-    if (editingTipoId) {
-      await api.request(`/drug-types/${editingTipoId}`, { method: 'PUT', body: JSON.stringify(payload) });
-    } else {
-      await api.request('/drug-types', { method: 'POST', body: JSON.stringify(payload) });
-    }
-    formTipo.reset();
-    editingTipoId = null;
-    await cargarTipos();
-  } catch (err) { alert(err.message); }
-});
-
-tbodyTipos?.addEventListener('click', async (e) => { // editar o borrar tipo
-  const id = e.target.dataset.editTipo || e.target.dataset.delTipo;
-  if (!id) return;
-  if (e.target.dataset.editTipo) {
-    const t = await api.request(`/drug-types/${id}`);
-    document.getElementById('tipo-nombre').value = t.nombre;
-    document.getElementById('tipo-descripcion').value = t.descripcion || '';
-    document.getElementById('tipo-estado').value = t.estado;
-    editingTipoId = id;
-  } else if (e.target.dataset.delTipo) {
-    if (confirm('¿Eliminar tipo?')) { await api.request(`/drug-types/${id}`, { method: 'DELETE' }); await cargarTipos(); }
-  }
-});
-
-// Marcas
-const formMarca = document.getElementById('form-marca');
-const tbodyMarcas = document.querySelector('#tabla-marcas tbody');
-let editingMarcaId = null;
-
-async function cargarMarcas() { // lista marcas
-  const data = await api.request('/brands');
-  tbodyMarcas.innerHTML = '';
-  data.forEach(m => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${m.id}</td>
-      <td>${m.nombre}</td>
-      <td>${m.estado}</td>
-      <td>
-        <button data-edit-marca="${m.id}">Editar</button>
-        <button data-del-marca="${m.id}">Eliminar</button>
-      </td>`;
-    tbodyMarcas.appendChild(tr);
-  });
-}
-
-formMarca?.addEventListener('submit', async (e) => { // guardar marca
-  e.preventDefault();
-  const payload = {
-    nombre: document.getElementById('marca-nombre').value.trim(),
-    estado: document.getElementById('marca-estado').value
-  };
-  if (!payload.nombre) return alert('Nombre requerido');
-  try {
-    if (editingMarcaId) {
-      await api.request(`/brands/${editingMarcaId}`, { method: 'PUT', body: JSON.stringify(payload) });
-    } else {
-      await api.request('/brands', { method: 'POST', body: JSON.stringify(payload) });
-    }
-    formMarca.reset();
-    editingMarcaId = null;
-    await cargarMarcas();
-  } catch (err) { alert(err.message); }
-});
-
-tbodyMarcas?.addEventListener('click', async (e) => { // editar o borrar marca
-  const id = e.target.dataset.editMarca || e.target.dataset.delMarca;
-  if (!id) return;
-  if (e.target.dataset.editMarca) {
-    const m = await api.request(`/brands/${id}`);
-    document.getElementById('marca-nombre').value = m.nombre;
-    document.getElementById('marca-estado').value = m.estado;
-    editingMarcaId = id;
-  } else if (e.target.dataset.delMarca) {
-    if (confirm('¿Eliminar marca?')) { await api.request(`/brands/${id}`, { method: 'DELETE' }); await cargarMarcas(); }
-  }
-});
-
-document.addEventListener('DOMContentLoaded', async () => { // cargar todo al inicio
-  await Promise.all([
-    cargarUbicaciones(),
-    cargarTipos(),
-    cargarMarcas()
-  ]);
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  renderHead(catalogs[selectCat.value]);
+  updateVisibility();
+  loadRows();
 });

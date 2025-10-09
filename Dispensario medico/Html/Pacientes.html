@@ -10,37 +10,46 @@
 
   <div id="navbar-container"></div>
   <main>
-  <h1>Gestión de Pacientes</h1>
+  <h1>Pacientes</h1>
 
-  <form id="form-paciente">
-    <label for="nombre">Nombre del Paciente:</label>
-    <input type="text" id="nombre" required>
-
-    <label for="cedula">Número de cédula:</label>
-    <input type="text" id="cedula" required>
-
-    <label for="identificador">Identificador:</label>
-    <input type="text" id="identificador" required>
-
-    <label for="tipo">Tipo de Paciente</label> 
-    <select id="tipo">
-      <option value="Estudiante">Estudiante</option>
-      <option value="Profesor">Profesor</option>
-      <option value="Empleado">Empleado</option>
-      <option value="Otro">Otro</option>
-    </select>
-
-    <label for="estado">Estado</label> 
-    <select id="estado">
-      <option value="Activo">Activo</option>
-      <option value="Inactivo">Inactivo</option>
-      <option value="Defuncion">Defunción</option>
-    </select>
-
-    <label for="doctor_id">Médico Asignado</label>
-    <select id="doctor_id"></select>
-
-    <button type="submit">Guardar</button>
+  <form id="form-paciente" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;background:#f5f5f5;padding:1rem;border-radius:6px;">
+    <div style="display:flex;flex-direction:column;">
+      <label for="nombre">Nombre *</label>
+      <input type="text" id="nombre" placeholder="Ej: Ana Gómez" required>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="cedula">Cédula *</label>
+      <input type="text" id="cedula" placeholder="000-0000000-0" required>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="identificador">Matricula *</label>
+      <input type="text" id="identificador" placeholder="Matricula" required>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="tipo">Tipo</label>
+      <select id="tipo">
+        <option value="Estudiante">Estudiante</option>
+        <option value="Profesor">Profesor</option>
+        <option value="Empleado">Empleado</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="estado">Estado</label>
+      <select id="estado">
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Defuncion">Defunción</option>
+      </select>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="doctor_id">Médico</label>
+      <select id="doctor_id"></select>
+    </div>
+    <div style="display:flex;gap:.5rem;">
+      <button type="submit" id="btn-pac-guardar">Guardar</button>
+      <button type="button" id="btn-pac-cancelar" class="hidden">Cancelar</button>
+    </div>
   </form>
 
   <table id="tabla">
@@ -49,7 +58,7 @@
         <th>ID</th>
         <th>Nombre</th>
         <th>Cédula</th>
-        <th>Identificador</th>
+  <th>Matricula</th>
         <th>Tipo</th>
         <th>Estado</th>
         <th>Médico</th>

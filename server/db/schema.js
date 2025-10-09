@@ -71,5 +71,26 @@ export function initSchema() {
       FOREIGN KEY(patient_id) REFERENCES patients(id),
       FOREIGN KEY(medicine_id) REFERENCES medicines(id)
     );`);
+
+    // --- Migraciones aditivas (añaden columnas si no existen) ---
+    // Helper que intenta ALTER y silencia error de columna duplicada
+    function addColumn(table, columnDef){
+      db.run(`ALTER TABLE ${table} ADD COLUMN ${columnDef};`, err => {
+        if (err && !/duplicate column name/i.test(err.message)) {
+          console.warn('[schema] No se pudo agregar columna', table, columnDef, err.message);
+        }
+      });
+    }
+
+    // brands: descripcion
+    addColumn('brands', 'descripcion TEXT');
+    // locations: tramo, celda (mantengo descripcion/estante por retro-compatibilidad)
+    addColumn('locations', 'tramo TEXT');
+    addColumn('locations', 'celda TEXT');
+    // medicines: descripcion, dosis
+    addColumn('medicines', 'descripcion TEXT');
+    addColumn('medicines', 'dosis TEXT');
+    // visits: recomendaciones
+    addColumn('visits', 'recomendaciones TEXT');
   });
 }

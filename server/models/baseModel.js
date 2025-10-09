@@ -1,13 +1,16 @@
-import { run, all, get } from '../db/connection.js';
+import { run, get, all } from '../db/connection.js';
 
 // Clase base simple para operaciones CRUD
+// Modelo base muy simple para CRUD genérico.
+// table: nombre de la tabla en la BD.
+// fields: campos permitidos para inserción/actualización.
 export class BaseModel {
   constructor(table, fields) {
     this.table = table;      // nombre de la tabla
     this.fields = fields;    // columnas (sin id)
   }
 
-  async create(data) { // crear
+  async create(data) { // inserta y devuelve { id: newId }
     const cols = this.fields.filter(f => f in data);
     const placeholders = cols.map(() => '?').join(',');
     const sql = `INSERT INTO ${this.table} (${cols.join(',')}) VALUES (${placeholders})`;
@@ -15,7 +18,7 @@ export class BaseModel {
     return run(sql, params);
   }
 
-  async findAll() { // listar todo
+  async findAll() { // lista todo
     return all(`SELECT * FROM ${this.table}`);
   }
 
@@ -23,7 +26,7 @@ export class BaseModel {
     return get(`SELECT * FROM ${this.table} WHERE id = ?`, [id]);
   }
 
-  async update(id, data) { // actualizar
+  async update(id, data) { // actualiza por id
     const cols = this.fields.filter(f => f in data);
     if (!cols.length) return { changes: 0 };
     const setStr = cols.map(c => `${c} = ?`).join(',');
@@ -32,7 +35,7 @@ export class BaseModel {
     return run(sql, params);
   }
 
-  async remove(id) { // borrar
+  async remove(id) { // elimina por id
     return run(`DELETE FROM ${this.table} WHERE id = ?`, [id]);
   }
 }

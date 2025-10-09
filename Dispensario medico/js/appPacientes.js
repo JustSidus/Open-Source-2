@@ -1,17 +1,20 @@
 const formPac = document.getElementById('form-paciente');
 const tbodyPac = document.querySelector('#tabla tbody');
+const btnPacCancelar = document.getElementById('btn-pac-cancelar');
 let editingPacId = null;
+let cacheDocs = [];
 
 async function cargarDoctoresPaciente() {
-  const docs = await api.request('/doctors');
+  cacheDocs = await api.request('/doctors');
   const sel = document.getElementById('doctor_id');
-  sel.innerHTML = '<option value="">--</option>' + docs.map(d => `<option value="${d.id}">${d.nombre}</option>`).join('');
+  sel.innerHTML = '<option value="">--</option>' + cacheDocs.map(d => `<option value="${d.id}">${d.nombre}</option>`).join('');
 }
 
 async function cargarPacientes() {
   const data = await api.request('/patients');
   tbodyPac.innerHTML='';
   data.forEach(p => {
+    const doctorNombre = cacheDocs.find(d=> d.id === p.doctor_id)?.nombre || '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${p.id}</td>
@@ -20,7 +23,7 @@ async function cargarPacientes() {
       <td>${p.identificador||''}</td>
       <td>${p.tipo||''}</td>
       <td>${p.estado}</td>
-      <td>${p.doctor_id||''}</td>
+      <td>${doctorNombre}</td>
       <td><button data-edit="${p.id}">Editar</button><button data-del="${p.id}">Del</button></td>`;
     tbodyPac.appendChild(tr);
   });
@@ -45,6 +48,8 @@ formPac.addEventListener('submit', async (e) => {
     }
     editingPacId = null;
     formPac.reset();
+    btnPacCancelar.classList.add('hidden');
+    document.getElementById('btn-pac-guardar').textContent='Guardar';
     await cargarPacientes();
   } catch (err) { alert(err.message); }
 });
@@ -61,6 +66,8 @@ tbodyPac.addEventListener('click', async (e) => {
     document.getElementById('estado').value = p.estado;
     document.getElementById('doctor_id').value = p.doctor_id || '';
     editingPacId = id;
+    btnPacCancelar.classList.remove('hidden');
+    document.getElementById('btn-pac-guardar').textContent='Actualizar';
   } else if (e.target.dataset.del) {
     if (confirm('¿Eliminar?')) { await api.request(`/patients/${id}`, { method: 'DELETE' }); await cargarPacientes(); }
   }
@@ -69,4 +76,10 @@ tbodyPac.addEventListener('click', async (e) => {
 document.addEventListener('DOMContentLoaded', async () => {
   await cargarDoctoresPaciente();
   await cargarPacientes();
+});
+btnPacCancelar?.addEventListener('click', ()=>{
+  editingPacId = null;
+  formPac.reset();
+  btnPacCancelar.classList.add('hidden');
+  document.getElementById('btn-pac-guardar').textContent='Guardar';
 });
