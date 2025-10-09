@@ -1,0 +1,50 @@
+/* Layout y navegación compartida */
+* { box-sizing: border-box; }
+body { margin:0; font-family: system-ui, Arial, sans-serif; background:#f5f7fa; color:#212b36; }
+a { text-decoration:none; color:#1d6fd8; }
+a:hover { text-decoration:underline; }
+
+.site-header { display:flex; align-items:center; justify-content:space-between; background:#164b7d; color:#fff; padding:0.6rem 1.2rem; position:sticky; top:0; z-index:100; }
+.site-header .brand { display:flex; align-items:center; gap:.5rem; font-weight:600; }
+.site-header .logo { font-size:1.4rem; }
+.site-header .title { font-size:1.05rem; letter-spacing:.5px; }
+.main-nav ul { list-style:none; margin:0; padding:0; display:flex; gap:1rem; }
+.main-nav a { color:#fff; padding:.5rem .75rem; border-radius:4px; font-size:.92rem; font-weight:500; }
+.main-nav a.active, .main-nav a:hover { background:rgba(255,255,255,.18); }
+
+.nav-toggle { display:none; background:#0d3a63; color:#fff; border:none; padding:.5rem .7rem; font-size:1.1rem; border-radius:4px; cursor:pointer; }
+
+@media (max-width: 760px) {
+  .main-nav { position:absolute; top:100%; left:0; right:0; background:#164b7d; display:none; flex-direction:column; padding:.75rem 1rem; }
+  .main-nav.open { display:flex; }
+  .main-nav ul { flex-direction:column; gap:.4rem; }
+  .nav-toggle { display:block; }
+}
+
+main { padding:1.5rem; max-width:1200px; margin:auto; }
+
+/* Dashboard */
+.cards-grid { display:grid; gap:1.25rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top:1.5rem; }
+.dash-card { background:#fff; padding:1.1rem 1.2rem; border:1px solid #e3e8ef; border-radius:10px; box-shadow:0 2px 4px rgba(0,0,0,.05); display:flex; flex-direction:column; gap:.4rem; transition: all .18s ease; }
+.dash-card:hover { transform:translateY(-3px); box-shadow:0 4px 10px rgba(0,0,0,.12); text-decoration:none; }
+.dash-card h2 { margin:.2rem 0 .1rem; font-size:1.05rem; color:#164b7d; }
+.dash-card p { margin:0; font-size:.8rem; line-height:1.25rem; color:#4b5563; }
+
+/* Tablas y formularios genericos ajustados para caber debajo del header */
+table { width:100%; border-collapse: collapse; background:#fff; margin-top:1.2rem; }
+th, td { padding:.65rem .7rem; border:1px solid #e2e8f0; font-size:.8rem; }
+th { background:#164b7d; color:#fff; text-align:left; }
+tbody tr:nth-child(even){ background:#f2f6fa; }
+tbody tr:hover { background:#e8f1fb; }
+button { cursor:pointer; }
+
+form { background:#fff; padding:1rem 1.1rem; border:1px solid #e3e8ef; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,.05); margin-top:1rem; }
+form label { font-size:.75rem; text-transform:uppercase; letter-spacing:.5px; font-weight:600; color:#34495e; margin-top:.65rem; display:block; }
+form input, form select { width:100%; padding:.55rem .6rem; border:1px solid #cbd5e1; border-radius:6px; margin-top:.25rem; font-size:.8rem; }
+form button { margin-top:1rem; background:#1d6fd8; border:none; padding:.55rem 1rem; color:#fff; font-size:.8rem; border-radius:6px; font-weight:600; }
+form button:hover { background:#155397; }
+
+.actions button { margin-right:.4rem; }
+
+/* Utilidades */
+.hidden { display:none!important; }

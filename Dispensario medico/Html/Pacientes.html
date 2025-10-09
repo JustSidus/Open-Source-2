@@ -2,56 +2,58 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Pacientes</title>
+  <title>Pacientes - Dispensario Médico</title>
+  <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/estilosP.css">
 </head>
 <body>
 
-  <h1>Consultor De Pacientes</h1>
+  <div id="navbar-container"></div>
+  <main>
+  <h1>Gestión de Pacientes</h1>
 
-  <form id="formulario">
+  <form id="form-paciente">
     <label for="nombre">Nombre del Paciente:</label>
     <input type="text" id="nombre" required>
 
-     <form id="formulario">
-    <label for="cedula">Numero de cedula:</label>
-    <input type="text" id="Cedula" required>
+    <label for="cedula">Número de cédula:</label>
+    <input type="text" id="cedula" required>
 
+    <label for="identificador">Identificador:</label>
+    <input type="text" id="identificador" required>
 
-    <form id="formulario">
-    <label for="indentificador">indentificador:</label>
-    <input type="text" id="indentificador" required>
-
-     <label for="Tipo">Tipo De Paciente</label> 
-    <select id="Tipo">
-      <option value="estudiante">Estudiante</option>
-      <option value="profesor">Profesor</option>
-      <option value="empleado">Empleado</option>
-      <option value="otro">Otro</option>
+    <label for="tipo">Tipo de Paciente</label> 
+    <select id="tipo">
+      <option value="Estudiante">Estudiante</option>
+      <option value="Profesor">Profesor</option>
+      <option value="Empleado">Empleado</option>
+      <option value="Otro">Otro</option>
     </select>
 
-    <label for="Estado">Estado</label> 
-    <select id="Estado">
+    <label for="estado">Estado</label> 
+    <select id="estado">
       <option value="Activo">Activo</option>
       <option value="Inactivo">Inactivo</option>
-      <option value="Defuncion">Defuncion</option>
+      <option value="Defuncion">Defunción</option>
     </select>
 
-    <label for="Doctor">Doctor</label>
-    <input type="text" id="Doctor" required>
+    <label for="doctor_id">Médico Asignado</label>
+    <select id="doctor_id"></select>
 
-    <button type="submit">Registrar</button>
+    <button type="submit">Guardar</button>
   </form>
 
   <table id="tabla">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Nombre</th>
-        <th>Cedula</th>
-        <th>indentificador</th>
-        <th>Tipo De Paciente</th>
+        <th>Cédula</th>
+        <th>Identificador</th>
+        <th>Tipo</th>
         <th>Estado</th>
-        <th>Doctor</th>
+        <th>Médico</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -59,6 +61,10 @@
     </tbody>
   </table>
 
-  <script src="../js/appP.js"></script>
+  </main>
+  <script src="../js/commonApi.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/appPacientes.js"></script>
 </body>
 </html>

@@ -1,53 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Gestión de Medicamentos</title>
-  <link rel="stylesheet" href="../css/estilosA.css">
+  <meta charset="UTF-8" />
+  <title>Almacén - Dispensario Médico</title>
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/estilosA.css" />
 </head>
 <body>
+  <div id="navbar-container"></div>
+  <main>
+    <h1>Gestión de Almacén (Ubicaciones / Catálogos)</h1>
 
-  <h1>Gestión de Alamcen</h1>
+    <section id="seccion-ubicaciones">
+      <h2>Ubicaciones</h2>
+      <form id="form-almacen">
+        <label for="nombre">Nombre de la ubicación:</label>
+        <input type="text" id="nombre" required />
+        <label for="descripcion">Descripción:</label>
+        <input type="text" id="descripcion" />
+        <label for="estante">Estante:</label>
+        <input type="text" id="estante" required />
+        <label for="estado">Estado:</label>
+        <select id="estado">
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+        <button type="submit">Guardar</button>
+      </form>
+      <table id="tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estante</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
 
-   <form id="formulario">
-    <label for="indentificador">Indentificador:</label>
-    <input type="text" id="indentificador" required>
+    <section id="seccion-tipos" style="margin-top:2rem;">
+      <h2>Tipos de Fármacos</h2>
+      <form id="form-tipo">
+        <label for="tipo-nombre">Nombre:</label>
+        <input type="text" id="tipo-nombre" required />
+        <label for="tipo-descripcion">Descripción:</label>
+        <input type="text" id="tipo-descripcion" />
+        <label for="tipo-estado">Estado:</label>
+        <select id="tipo-estado">
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+        <button type="submit">Guardar Tipo</button>
+      </form>
+      <table id="tabla-tipos">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
 
-  <form id="formulario">
-    <label for="nombre">Nombre del producto:</label>
-    <input type="text" id="nombre" required>
-
-      <form id="formulario">
-    <label for="descripicion">Descripicion:</label>
-    <input type="text" id="Descripicion" required>
-
-    <label for="estante">Estante:</label>
-    <input type="text" id="estante" required>
-
-  <label for="estado">Estado:</label> 
-    <select id="estado">
-      <option value="Activo">Activo</option>
-      <option value="Vencido">Vencido</option>
-    </select>
-
-    <button type="submit">Registrar</button>
-  </form>
-
-  <table id="tabla">
-    <thead>
-      <tr>
-        <th>Indentificador</th>
-        <th>Nombre del producto</th>
-        <th>Descripicion</th>
-        <th>Estante</th>
-        <th>Estado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Medicamentos registrados aparecerán aquí -->
-    </tbody>
-  </table>
-
-  <script src="../js/appA.js"></script>
+    <section id="seccion-marcas" style="margin-top:2rem;">
+      <h2>Marcas</h2>
+      <form id="form-marca">
+        <label for="marca-nombre">Nombre:</label>
+        <input type="text" id="marca-nombre" required />
+        <label for="marca-estado">Estado:</label>
+        <select id="marca-estado">
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+        <button type="submit">Guardar Marca</button>
+      </form>
+      <table id="tabla-marcas">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="../js/commonApi.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/appAlmacen.js"></script>
 </body>
 </html>

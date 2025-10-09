@@ -2,23 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Medicamentos</title>
+  <title>Médicos - Dispensario Médico</title>
+  <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/estilosE.css">
 </head>
 <body>
 
-  <h1>Gestión de Medicos</h1>
+  <div id="navbar-container"></div>
+  <main>
+  <h1>Gestión de Médicos</h1>
 
-  <form id="formulario">
-    <label for="nombre">Nombre Del Medico:</label>
+  <form id="form-medico">
+    <label for="nombre">Nombre del Médico:</label>
     <input type="text" id="nombre" required>
 
-    <form id="formulario">
-    <label for="indentificador">Indentificador Del Medico:</label>
-    <input type="text" id="indentificador" required>
+    <label for="identificador">Identificador:</label>
+    <input type="text" id="identificador" required>
 
-     <form id="formulario">
-    <label for="cedula">Cedula Del Medico:</label>
+    <label for="cedula">Cédula:</label>
     <input type="text" id="cedula" required>
 
     <label for="tanda_laboral">Tanda Laboral:</label>
@@ -29,28 +30,29 @@
       <option value="Rotativa">Rotativa</option>
     </select>
 
-    <label for="espcialidad">Especialidad:</label>
+    <label for="especialidad">Especialidad:</label>
     <input type="text" id="especialidad" required>
 
-  <label for="estado">Estado:</label> 
+    <label for="estado">Estado:</label> 
     <select id="estado">
-      <option value="Disponible">Activo</option>
+      <option value="Disponible">Disponible</option>
       <option value="Ausente">Ausente</option>
       <option value="Descanso">Descanso</option>
     </select>
-
-    <button type="submit">Registrar</button>
+    <button type="submit">Guardar</button>
   </form>
 
   <table id="tabla">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Nombre</th>
-        <th>Indentificador</th>
-        <th>Cedula</th>
+        <th>Identificador</th>
+        <th>Cédula</th>
         <th>Tanda laboral</th>
         <th>Especialidad</th>
         <th>Estado</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -58,6 +60,10 @@
     </tbody>
   </table>
 
-  <script src="../js/appE.js"></script>
+  </main>
+  <script src="../js/commonApi.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/appMedicos.js"></script>
 </body>
 </html>
