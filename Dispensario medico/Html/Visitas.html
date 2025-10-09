@@ -2,61 +2,78 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Visitas</title>
+  <title>Visitas - Dispensario Médico</title>
+  <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/estilosV.css">
 </head>
 <body>
 
-  <h1>Gestión de Visitas</h1>
+  <div id="navbar-container"></div>
+  <main>
+  <h1>Registro de Visitas</h1>
 
-<form id="formulario">
-    <label for="nombre">Nombre del Visitante:</label>
-    <input type="text" id="nombre" required>
+  <form id="form-visita">
+    <label for="visitante">Nombre del Visitante:</label>
+    <input type="text" id="visitante" required>
 
-<form id="formulario">
-    <label for="medico">Nombre del Medico:</label>
-    <input type="text" id="medico" required>
+    <label for="doctor_id">Médico:</label>
+    <select id="doctor_id"></select>
 
-<form id="formulario">
-    <label for="paciente">Nombre del paciente:</label>
-    <input type="text" id="paciente" required>
+    <label for="patient_id">Paciente:</label>
+    <select id="patient_id"></select>
 
-<form id="formulario">
+    <label for="medicine_id">Medicamento:</label>
+    <select id="medicine_id"></select>
+
     <label for="fecha">Fecha de visita:</label>
     <input type="date" id="fecha" required>
 
-<form id="formulario">
     <label for="hora">Hora de Visita:</label>
     <input type="time" id="hora" required>
 
-<form id="formulario">
-    <label for="sintoma">Sintomas:</label>
-    <input type="text" id="sintoma" required>
+    <label for="sintomas">Síntomas:</label>
+    <input type="text" id="sintomas" required>
 
-    <form id="formulario">
-    <label for="medicamento">Medicamento Suministrado:</label>
-    <input type="text" id="medicamento" required>
+  <label for="recomendaciones">Recomendaciones:</label>
+  <input type="text" id="recomendaciones" placeholder="Indicaciones del médico">
 
-  <label for="estado">Estado:</label> 
+    <label for="estado">Estado:</label> 
     <select id="estado">
       <option value="Activo">Activo</option>
-      <option value="despachado">Despachado</option>
+      <option value="Despachado">Despachado</option>
     </select>
+    <button type="submit">Guardar</button>
+  </form>
 
-    <button type="submit">Registrar</button>
+  <h2>Reportes de Visitas</h2>
+  <form id="form-filtro">
+    <label for="f_doctor_id">Médico:</label>
+    <select id="f_doctor_id"><option value="">--</option></select>
+    <label for="f_patient_id">Paciente:</label>
+    <select id="f_patient_id"><option value="">--</option></select>
+    <label for="f_date">Fecha:</label>
+    <input type="date" id="f_date">
+    <label for="f_from">Desde:</label>
+    <input type="date" id="f_from">
+    <label for="f_to">Hasta:</label>
+    <input type="date" id="f_to">
+    <button type="submit">Filtrar</button>
   </form>
 
   <table id="tabla">
     <thead>
       <tr>
-        <th>Nombre del Visitante</th>
-        <th>Nombre del Medico</th>
-        <th>Nombre del paciente</th>
-        <th>Fecha de visita</th>
-        <th>Hora de Visita</th>
-        <th>Sintomas</th>
-        <th>Medicamento Suministrado</th>
+        <th>ID</th>
+        <th>Visitante</th>
+        <th>Médico</th>
+        <th>Paciente</th>
+        <th>Medicamento</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Síntomas</th>
+  <th>Recomendaciones</th>
         <th>Estado</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -64,6 +81,10 @@
     </tbody>
   </table>
 
-  <script src="../js/appMV.js"></script>
+  </main>
+  <script src="../js/commonApi.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/appVisitas.js"></script>
 </body>
 </html>

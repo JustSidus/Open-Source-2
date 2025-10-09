@@ -2,56 +2,67 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gestión de Pacientes</title>
+  <title>Pacientes - Dispensario Médico</title>
+  <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/estilosP.css">
 </head>
 <body>
 
-  <h1>Consultor De Pacientes</h1>
+  <div id="navbar-container"></div>
+  <main>
+  <h1>Pacientes</h1>
 
-  <form id="formulario">
-    <label for="nombre">Nombre del Paciente:</label>
-    <input type="text" id="nombre" required>
-
-     <form id="formulario">
-    <label for="cedula">Numero de cedula:</label>
-    <input type="text" id="Cedula" required>
-
-
-    <form id="formulario">
-    <label for="indentificador">indentificador:</label>
-    <input type="text" id="indentificador" required>
-
-     <label for="Tipo">Tipo De Paciente</label> 
-    <select id="Tipo">
-      <option value="estudiante">Estudiante</option>
-      <option value="profesor">Profesor</option>
-      <option value="empleado">Empleado</option>
-      <option value="otro">Otro</option>
-    </select>
-
-    <label for="Estado">Estado</label> 
-    <select id="Estado">
-      <option value="Activo">Activo</option>
-      <option value="Inactivo">Inactivo</option>
-      <option value="Defuncion">Defuncion</option>
-    </select>
-
-    <label for="Doctor">Doctor</label>
-    <input type="text" id="Doctor" required>
-
-    <button type="submit">Registrar</button>
+  <form id="form-paciente" style="display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end;background:#f5f5f5;padding:1rem;border-radius:6px;">
+    <div style="display:flex;flex-direction:column;">
+      <label for="nombre">Nombre *</label>
+      <input type="text" id="nombre" placeholder="Ej: Ana Gómez" required>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="cedula">Cédula *</label>
+      <input type="text" id="cedula" placeholder="000-0000000-0" required>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="identificador">Matricula *</label>
+      <input type="text" id="identificador" placeholder="Matricula" required>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="tipo">Tipo</label>
+      <select id="tipo">
+        <option value="Estudiante">Estudiante</option>
+        <option value="Profesor">Profesor</option>
+        <option value="Empleado">Empleado</option>
+        <option value="Otro">Otro</option>
+      </select>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="estado">Estado</label>
+      <select id="estado">
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+        <option value="Defuncion">Defunción</option>
+      </select>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+      <label for="doctor_id">Médico</label>
+      <select id="doctor_id"></select>
+    </div>
+    <div style="display:flex;gap:.5rem;">
+      <button type="submit" id="btn-pac-guardar">Guardar</button>
+      <button type="button" id="btn-pac-cancelar" class="hidden">Cancelar</button>
+    </div>
   </form>
 
   <table id="tabla">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Nombre</th>
-        <th>Cedula</th>
-        <th>indentificador</th>
-        <th>Tipo De Paciente</th>
+        <th>Cédula</th>
+  <th>Matricula</th>
+        <th>Tipo</th>
         <th>Estado</th>
-        <th>Doctor</th>
+        <th>Médico</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -59,6 +70,10 @@
     </tbody>
   </table>
 
-  <script src="../js/appP.js"></script>
+  </main>
+  <script src="../js/commonApi.js"></script>
+  <script src="../js/navbar.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/appPacientes.js"></script>
 </body>
 </html>
