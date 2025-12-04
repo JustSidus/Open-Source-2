@@ -44,7 +44,7 @@ npm run dev
 ```
 3. Abrir en el navegador:
 ```
-http://localhost:3000/
+http://localhost:3000/Html/Visitas.html
 ```
 Si quieres otra página: por ejemplo `http://localhost:3000/Html/Almacen.html`.
 
